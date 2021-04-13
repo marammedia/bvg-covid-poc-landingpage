@@ -35,7 +35,6 @@ a {
   text-decoration: none;
 }
 
-
 body > header {
   display: grid;
 
@@ -51,13 +50,13 @@ body > header > div {
   padding: var(--space-sm);
 }
 body > header h1 {
-  font-size: 2rem;
-  padding: 0 0 0 6rem;
+  font-size: var(--space-lg);
+  padding: 0 0 0 var(--space-xxl);
   margin: 0;
 }
 @media (max-width: 640px) {
   body > header h1 {
-    font-size: 1.5rem;
+    font-size: var(--space-md);
     padding: 0;
   }
 }
@@ -78,10 +77,12 @@ body > header > .black-line > img {
 
 
 main {
+  max-width: 80vw;
   display: grid;
   gap: var(--space-xl);
   place-content: center;
   padding: var(--space-xl) var(--space-sm);
+  margin: 0 auto;
 }
 
 section {
@@ -101,6 +102,30 @@ section {
 article {
   display: grid;
   gap: var(--space-md);
+}
+
+.tutorial > article {
+  gap: 0;
+  line-height: 1.4;
+}
+.tutorial > article > div:first-of-type {
+  display: grid;
+  place-items: center;
+
+  font-weight: bold;
+  background-color: #f0d722;
+  border: 4px solid #fff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  margin: 0 auto;
+}
+.tutorial > article > div:last-of-type {
+  background-color: #E0E0E0;
+  border-radius: var(--space-sm);
+  margin-top: -1rem;
+  padding: var(--space-lg);
+  z-index: -1;
 }
 
 header {
@@ -131,15 +156,174 @@ nav > a:hover {
 }
 
 footer {
+  --repeat: auto-fit;
+
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(var(--repeat), 1fr);
   padding: var(--space-sm);
   color: rgb(255 255 255 / 54%);
   background-color: #373631;
 }
-footer > div:last-of-type {
-  text-align: right;
+@media (min-width: 640px) {
+  footer {
+    --repeat: 2;
+  }
+
+  footer > div:last-of-type {
+    text-align: right;
+  }
 }
+
 footer > div:last-of-type > a + a {
   margin-left: var(--space-sm);
+}
+
+
+
+#dialog-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0, 0, 0, .32);
+  opacity: 0;
+
+  pointer-events: none;
+  transition: opacity 0.333s cubic-bezier(0, 0, 0.21, 1);
+  will-change: opacity;
+}
+#dialog-container.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+
+  background: #fff;
+  border-radius: 4px;
+  box-shadow:
+    0 11px 15px -7px rgb(0 0 0 / 20%),
+    0 24px 38px 3px rgb(0 0 0 / 14%),
+    0 9px 46px 8px rgb(0 0 0 / 12%);
+
+  transform: translateY(30px);
+  transition: transform 0.333s cubic-bezier(0, 0, 0.21, 1) 0.05s;
+
+  padding: 24px;
+
+  width: 640px;
+  max-width: calc(100% - 32px);
+  max-height: calc(100% - 32px);
+}
+
+.dialog-title {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  margin-bottom: 24px;
+}
+
+.dialog-body {
+  font-size: 1rem;
+  line-height: 1.5rem;
+  
+  margin: 0;
+  overflow: auto;
+}
+.dialog-body > a {
+  text-decoration: underline;
+}
+
+.dialog-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+
+  margin-top: 24px;
+}
+
+.button {
+  background: transparent;
+  border: none;
+  border-radius: 2px;
+  color: #000;
+  position: relative;
+  height: 36px;
+  margin: 0;
+  min-width: 64px;
+  padding: 0 16px;
+  display: inline-block;
+
+  border: 1px solid transparent;
+  overflow: hidden;
+  transition: background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+              color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  line-height: 36px;
+  vertical-align: middle;
+}
+.button + .button {
+  margin-left: 8px;
+}
+
+.button:hover {
+  background-color: rgb(0 0 0 / 12%);
+}
+
+.button:focus:not(:active) {
+  background-color: rgb(0 0 0 / 12%);
+}
+
+.button:active {
+  background-color: rgb(0 0 0 / 40%);
+}
+
+.button.button-colored:not([disabled]):hover {
+  background-color: #f0d722;
+}
+
+.button[disabled] {
+  color: rgb(0 0 0 / 26%);
+  cursor: default;
+  background-color: transparent;
+}
+
+.button.is-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+.button.is-loading::after {
+  position: absolute;
+  left: calc(50% - (1rem / 2));
+  top: calc(50% - (1rem / 2));
+  
+  display: block;
+  content: "";
+  height: 1rem;
+  width: 1rem;
+
+  border-radius: 50%;
+  border: 2px solid #000;
+  border-right-color: transparent;
+  border-top-color: transparent;
+  
+  animation: spinAround .5s infinite linear;
+}
+
+@keyframes spinAround {
+  from { transform: rotate(0); }
+  to { transform: rotate(359deg); }
 }

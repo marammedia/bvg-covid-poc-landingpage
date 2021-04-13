@@ -16,18 +16,35 @@
         <img src="./images/logo.svg" />
       </div>
       <div>
-        <h1>kostenlose Corona-Testangebote</h1>
+        <h1>Die BVG testet sich: kostenlose Corona-Testangebote</h1>
       </div>
     </header>
 
-    <main>      
+    <main>
+      <section class="tutorial">
+        <article>
+          <div>1</div>
+          <div>Ein passendes Datum, sowie einen Standort aus der nachfolgenden Liste auswählen. Es erfolgt anschließend eine Weiterleitung zum Dienstleister. Das Testangebot ist kostenlos.</div>
+        </article>
+
+        <article>
+          <div>2</div>
+          <div>Im dortigen Terminvereinbarungsportal eine Uhrzeit auswählen und die persönlichen Daten eingeben.<br />Das Feld <em>Dokumentennummer</em> ist mit der <em>Dienstausweisnummer</em> zu befüllen.<br />Die Terminvereinbarung muss vollständig durchgeführt werden - andernfalls ist keine Testung möglich.</div>
+        </article>
+
+        <article>
+          <div>3</div>
+          <div>Der gebuchte Zeitpunkt ist möglichst einzuhalten und der Dienstausweis, sowie das Ticket (Digital oder Print) ist mitzubringen und vor Ort unaufgefordert vorzuzeigen.</div>
+        </article>
+      </section>
+
       <section>
           <?php
 
           $data = array(
             '20210414' => array(
               'Gleisdreieck' => 'https://coronatest-b2b.ticket.io/49647gab/',
-              'Britz-Süd' => 'https://coronatest-b2b.ticket.io/gdk3rhw7/',
+              'Britz' => 'https://coronatest-b2b.ticket.io/gdk3rhw7/',
               'Seestraße' => 'https://coronatest-b2b.ticket.io/4tj4xqab/',
               'Friedrichsfelde' => 'https://coronatest-b2b.ticket.io/t9dhbcw9/',
               'Machandelweg' => 'https://coronatest-b2b.ticket.io/npqc8b7f/'
@@ -61,7 +78,7 @@
               echo '<nav>';
                 ksort($locations);
                 foreach ($locations as $location => $url) {
-                  echo '<a href="'.$url.'" target="_blank" class="fieldset-item">';
+                  echo '<a href="'.$url.'" target="_blank">';
                     echo $location;
                   echo '</a>';
                 }
@@ -74,6 +91,19 @@
       </section>
     </main>
 
+    <div id="dialog-container">
+      <div class="dialog">
+        <div class="dialog-title">Datenschutzhinweis</div>
+        <div class="dialog-body">
+          Hiermit bestätige ich, dass ich die <a href="#" target="_blank">Datenschutzhinweise</a> zur Kenntnis genommen habe und willige in die Datenverarbeitung ein.
+        </div>
+        <div class="dialog-buttons">
+          <button id="btnDialogCancel" class="button">Abbrechen</button>
+          <button id="btnDialogContinue" class="button button-colored">Zustimmen</button>
+        </div>
+      </div>
+    </div>
+
     <footer>
       <div>2021 &copy; Berliner Verkehrsbetriebe</div>
       <div>
@@ -81,6 +111,8 @@
         <a href="https://www.bvg.de/de/Serviceseiten/Datenschutzhinweise">Datenschutz</a>
       </div>
     </footer>
+
+    <script src="./js/main.js"></script>
 
   </body>
 </html>
