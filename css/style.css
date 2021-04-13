@@ -1,0 +1,145 @@
+:root {
+  --space-xxs: .25rem;
+  --space-xs:  .5rem;
+  --space-sm:  1rem;
+  --space-md:  1.5rem;
+  --space-lg:  2rem;
+  --space-xl:  3rem;
+  --space-xxl: 6rem;
+}
+
+html {
+  block-size: 100%;
+  inline-size: 100%;
+}
+
+body {
+  min-block-size: 100%;
+  min-inline-size: 100%;
+
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+
+  color: #000;
+  font-family: system-ui, sans-serif;
+}
+
+h1, h2, h3 { 
+  margin: 0; 
+  font-weight: 500;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+
+body > header {
+  display: grid;
+
+  width: 100%;
+  z-index: 4;
+
+  background-color: #fff;
+  box-shadow: 0 2px 4px -1px rgb(0 0 0 / 20%),
+              0 4px 5px 0 rgb(0 0 0 / 14%),
+              0 1px 10px 0 rgb(0 0 0 / 12%);
+}
+body > header > div {
+  padding: var(--space-sm);
+}
+body > header h1 {
+  font-size: 2rem;
+  padding: 0 0 0 6rem;
+  margin: 0;
+}
+@media (max-width: 640px) {
+  body > header h1 {
+    font-size: 1.5rem;
+    padding: 0;
+  }
+}
+
+body > header > .black-line {
+  background-color: #373631;
+  height: 8px;
+}
+body > header > .black-line > img {
+  --logo-width: 80px;
+  width: var(--logo-width);
+}
+@media (max-width: 640px) {
+  body > header > .black-line > img {
+    --logo-width: 48px;
+  }
+}
+
+
+main {
+  display: grid;
+  gap: var(--space-xl);
+  place-content: center;
+  padding: var(--space-xl) var(--space-sm);
+}
+
+section {
+  --repeat: auto-fit;
+
+  display: grid;
+  gap: var(--space-xl) var(--space-xxl);
+  grid-template-columns: repeat(var(--repeat), 1fr);
+  align-items: flex-start;
+}
+@media (min-width: 640px) {
+  section {
+    --repeat: 3;
+  }
+}
+
+article {
+  display: grid;
+  gap: var(--space-md);
+}
+
+header {
+  display: grid;
+  gap: var(--space-xxs);
+}
+
+nav {
+  background: #ccc;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 1px;
+  border-radius: var(--space-sm);
+  overflow: hidden;
+  box-shadow: 0 0 8px 2px rgb(0 0 0 / 20%);
+}
+
+nav > a {
+  background: #fff;
+  transition: background .2s ease;
+
+  padding-block: var(--space-sm);
+  padding-inline: var(--space-md);
+}
+nav > a:hover {
+  background: #f0d722;
+}
+
+footer {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  padding: var(--space-sm);
+  color: rgb(255 255 255 / 54%);
+  background-color: #373631;
+}
+footer > div:last-of-type {
+  text-align: right;
+}
+footer > div:last-of-type > a + a {
+  margin-left: var(--space-sm);
+}
