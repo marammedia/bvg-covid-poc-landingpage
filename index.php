@@ -41,30 +41,22 @@
       <section>
           <?php
 
-          $data = array(
-            '20210414' => array(
-              'Gleisdreieck' => 'https://coronatest-b2b.ticket.io/49647gab/',
-              'Britz' => 'https://coronatest-b2b.ticket.io/gdk3rhw7/',
-              'Seestraße' => 'https://coronatest-b2b.ticket.io/4tj4xqab/',
-              'Friedrichsfelde' => 'https://coronatest-b2b.ticket.io/t9dhbcw9/',
-              'Machandelweg' => 'https://coronatest-b2b.ticket.io/npqc8b7f/'
-            ),
-            '20210415' => array(
-              'Weißensee' => 'https://coronatest-b2b.ticket.io/4w73243b/',
-              'Marzahn' => 'https://coronatest-b2b.ticket.io/4jj7c7hk/',
-              'Köpenick' => 'https://coronatest-b2b.ticket.io/leegwbcn/',
-              'Britz-Süd' => 'https://coronatest-b2b.ticket.io/e97mqx2b/',
-              'Cicerostraße' => 'https://coronatest-b2b.ticket.io/7teg4kfd/',
-              'Müllerstraße' => 'https://coronatest-b2b.ticket.io/g8b9exeg/',
-              'Spandau' => 'https://coronatest-b2b.ticket.io/hkk24ak2/',
-            ),
-            '20210416' => array(
-              'Friedrichsfelde' => 'https://coronatest-b2b.ticket.io/ct93wg7t/',
-              'Machandelweg' => 'https://coronatest-b2b.ticket.io/f8nxk9r4/',
-              'Indira-Gandhi-Straße' => 'https://coronatest-b2b.ticket.io/qqcxtfh8/',
-              'Lichtenberg' => 'https://coronatest-b2b.ticket.io/37bawt43/',
-            ),
-          );
+          $data = array();
+
+          $root = dirname(__FILE__);
+          $path = $root.'/termin-data.csv';
+
+          $raw = @file_get_contents($path);
+          $lines = explode("\n", $raw);
+          foreach ($lines as $line) {
+            if (empty($line)) {
+              continue;
+            }
+
+            $line = utf8_encode($line);
+            list($date, $location, $url) = explode(';', $line);
+            $data[$date][$location] = $url;
+          }
 
           ksort($data);
           foreach ($data as $date => $locations) {
@@ -95,7 +87,21 @@
       <div class="dialog">
         <div class="dialog-title">Datenschutzhinweis</div>
         <div class="dialog-body">
-          Hiermit bestätige ich, dass ich die <a href="#" target="_blank">Datenschutzhinweise</a> zur Kenntnis genommen habe und willige in die Datenverarbeitung ein.
+          <div>
+            <p>Hiermit bestätige ich, dass ich die nachfolgenden Datenschutzhinweise zur 
+              Kenntnis genommen habe und willige in die Datenverarbeitung ein.</p>
+          </div>
+          <div>
+            <strong>freiwillige Teilnahme am Testangebot:</strong>
+            <p>Hiermit bestätige ich zusätzlich, dass ich die nachfolgenden Einwilligungserklärung  
+              zur Kenntnis genommen habe und willige in die Datenverarbeitung ein.</p>
+          </div>
+          <div>
+            <a href="./documents/20210413_Datenschutzhinweis.pdf" target="_blank">Datenschutzhinweis</a>
+          </div>
+          <div>
+            <a href="./documents/20210413_Einwilligungserklaerung.pdf" target="_blank">Einwilligungserklärung</a>
+          </div>
         </div>
         <div class="dialog-buttons">
           <button id="btnDialogCancel" class="button">Abbrechen</button>
