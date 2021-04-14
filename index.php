@@ -41,6 +41,12 @@
       <section>
           <?php
 
+          $timezone = new DateTimeZone('Europe/Berlin');
+
+          $today = new DateTime();
+          $today->setTime(0, 0, 0);
+          $today->setTimezone($timezone);
+
           $data = array();
 
           $root = dirname(__FILE__);
@@ -61,6 +67,11 @@
           ksort($data);
           foreach ($data as $date => $locations) {
             $datetime = new DateTime($date);
+            $datetime->setTimezone($timezone);
+
+            if (!$datetime || $today > $datetime) {
+              continue;
+            }
 
             echo '<article>';
               echo '<header>';
