@@ -1,3 +1,10 @@
+<?php
+
+$config = array(
+  'csv-url' => 'https://beta.bvg.de/dam/jcr:2f4f829a-780b-4749-8207-e34c898f7704/corona-schnelltest-termin-data.csv',
+);
+
+?>
 <!doctype html>
 <html lang="de" dir="ltr">
   <head>
@@ -49,14 +56,14 @@
 
           $data = array();
 
-          $path = 'https://beta.bvg.de/dam/jcr:2f4f829a-780b-4749-8207-e34c898f7704/corona-schnelltest-termin-data.csv';
-          $raw = @file_get_contents($path);
+          $raw = @file_get_contents($config['csv-url']);
           $lines = explode("\n", $raw);
           foreach ($lines as $line) {
             if (empty($line)) {
               continue;
             }
 
+            $line = html_entity_decode($line);
             list($date, $location, $url) = explode(';', $line);
             $data[$date][$location] = $url;
           }
