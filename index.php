@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="de" dir="ltr">
   <head>
     <title>BVG.de | kostenlose Corona-Testangebote</title>
     <meta charset="utf-8">
@@ -49,9 +49,7 @@
 
           $data = array();
 
-          $root = dirname(__FILE__);
-          $path = $root.'/termin-data.csv';
-
+          $path = 'https://beta.bvg.de/dam/jcr:2f4f829a-780b-4749-8207-e34c898f7704/corona-schnelltest-termin-data.csv';
           $raw = @file_get_contents($path);
           $lines = explode("\n", $raw);
           foreach ($lines as $line) {
@@ -59,7 +57,6 @@
               continue;
             }
 
-            $line = utf8_encode($line);
             list($date, $location, $url) = explode(';', $line);
             $data[$date][$location] = $url;
           }
