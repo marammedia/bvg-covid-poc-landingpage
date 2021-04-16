@@ -64,8 +64,11 @@ $config = array(
             }
 
             $line = html_entity_decode($line);
-            list($date, $location, $url) = explode(';', $line);
-            $data[$date][$location] = $url;
+            list($date, $location, $url, $hints) = explode(';', $line, 4);
+            $data[$date][$location] = array(
+              'url' => $url,
+              'hints' => $hints,
+            );
           }
 
           ksort($data);
@@ -84,9 +87,12 @@ $config = array(
               
               echo '<nav>';
                 ksort($locations);
-                foreach ($locations as $location => $url) {
-                  echo '<a href="'.$url.'" target="_blank">';
+                foreach ($locations as $location => $content) {
+                  echo '<a href="'.$content['url'].'" target="_blank">';
                     echo $location;
+                    if ($content['hints']) {
+                      echo ' <sup>'.$content['hints'].'</sup>';
+                    }
                   echo '</a>';
                 }
               echo '</nav>';
@@ -96,6 +102,8 @@ $config = array(
           ?>
 
       </section>
+
+      <p>1 &ndash; Diese Teststation(en) sind <strong>ausschließlich</strong> für Mitarbeiterinnen und Mitarbeiter des jeweiligen Standortes zugelassen.</p>
     </main>
 
     <div id="dialog-container">

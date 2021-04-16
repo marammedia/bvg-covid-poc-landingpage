@@ -4,6 +4,7 @@ const dialog = document.getElementById('dialog-container');
 let lastBookingLink;
 
 const toogleDialog = () => {
+  document.body.classList.toggle('dialog-scroll-lock');
   dialog.classList.toggle('is-open');
 }
 
