@@ -353,3 +353,8 @@ footer > div:last-of-type > a + a {
   from { transform: rotate(0); }
   to { transform: rotate(359deg); }
 }
+
+.timeframe {
+  color: #616161;
+  font-size: .75rem;
+}

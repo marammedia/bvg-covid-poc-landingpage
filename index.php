@@ -64,10 +64,12 @@ $config = array(
             }
 
             $line = html_entity_decode($line);
-            list($date, $location, $url, $hints) = explode(';', $line, 4);
+            list($date, $location, $url, $hints, $begin, $end) = explode(';', $line, 6);
             $data[$date][$location] = array(
-              'url' => $url,
-              'hints' => $hints,
+              'url' => trim($url),
+              'hints' => trim($hints),
+              'startTime' => trim($begin),
+              'endTime' => trim($end),
             );
           }
 
@@ -88,10 +90,25 @@ $config = array(
               echo '<nav>';
                 ksort($locations);
                 foreach ($locations as $location => $content) {
+                  $begin = null;
+                  if (!empty($content['startTime'])) {
+                    $begin = new DateTime($content['startTime']);
+                  }
+                  $end = null;
+                  if (!empty($content['endTime'])) {
+                    $end = new DateTime($content['endTime']);
+                  }
+
                   echo '<a href="'.$content['url'].'" target="_blank">';
                     echo $location;
                     if ($content['hints']) {
                       echo ' <sup>'.$content['hints'].'</sup>';
+                    }
+
+                    if ($begin && $end) {
+                      echo '<div class="timeframe">';
+                        echo $begin->format('H:i').' Uhr &ndash; '.$end->format('H:i').' Uhr';
+                      echo '</div>';
                     }
                   echo '</a>';
                 }
