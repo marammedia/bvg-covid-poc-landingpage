@@ -79,7 +79,6 @@ body > header > .black-line > img {
 main {
   max-width: 80vw;
   display: grid;
-  gap: var(--space-xl);
   place-content: center;
   padding: var(--space-xl) var(--space-sm);
   margin: 0 auto;
@@ -90,6 +89,11 @@ main > p {
   border-left: 3px solid #000;
   background-color: #e0e0e0;
   border-radius: 3px;
+  margin-bottom: var(--space-xxs);
+}
+main > p:last-of-type {
+  display: flex;
+  margin-bottom: var(--space-sm);
 }
 
 section {
@@ -99,6 +103,7 @@ section {
   gap: var(--space-xl) var(--space-xxl);
   grid-template-columns: repeat(var(--repeat), 1fr);
   align-items: flex-start;
+  margin-bottom: var(--space-xxl);
 }
 @media (min-width: 640px) {
   section {
@@ -152,6 +157,11 @@ nav {
 }
 
 nav > a {
+  display: grid;
+  gap: var(--space-xxs);
+  grid-template-columns: 1fr auto;
+  align-items: center;
+
   background: #fff;
   transition: background .2s ease;
 
@@ -159,6 +169,10 @@ nav > a {
 }
 nav > a:hover {
   background: #f0d722;
+}
+
+nav > a > div:last-of-type {
+  text-align: right;
 }
 
 footer {
