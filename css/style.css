@@ -83,8 +83,10 @@ main {
 }
 
 main > p {
-  display: flex;
+  display: grid;
   align-items: center;
+  grid-template-columns: 32px auto;
+  gap: var(--space-xs);
   margin: var(--space-xs) 0;
 }
 
