@@ -9,40 +9,22 @@ $today = new DateTime();
 $today->setTime(0, 0, 0);
 $today->setTimezone($timezone);
 
-$data = array();
-$raw = @file_get_contents($config['csv-url']);
-$lines = explode("\n", $raw);
-foreach ($lines as $line) {
-  if (empty($line)) {
-    continue;
-  }
+$weekdays = array(
+  'Mon' => 'Mo',
+  'Tue' => 'Di',
+  'Wed' => 'Mi',
+  'Thu' => 'Do',
+  'Fri' => 'Fr',
+  'Sat' => 'Sa',
+  'Sun' => 'So',
+);
 
-  $line = html_entity_decode($line);
-  $rows = explode(';', $line, 6);
-  $rows = array_map('trim', $rows);
-
-  list($date, $location, $url, $hints, $begin, $end) = $rows;
-  $data[$date][$location] = array(
-    'url' => $url,
-    'hints' => $hints,
-    'startTime' => $begin,
-    'endTime' => $end,
-  );
-}
-ksort($data);
-
-$options = array();
-$json = @file_get_contents($config['options-url']);
-$json = json_decode($json);
-foreach ($json as $option => $values) {
-  foreach ($values as $key => $value) {
-    $options[$option][$key] = $value;
-  }
-}
+$data = @file_get_contents($config['data-url']);
+$data = json_decode($data, true);
 
 ?>
 <!doctype html>
-<html lang="de" dir="ltr">
+<html lang="de">
   <head>
     <title>BVG.de | kostenlose Corona-Testangebote</title>
     <meta charset="utf-8">
@@ -59,113 +41,93 @@ foreach ($json as $option => $values) {
         <img src="./images/logo.svg" />
       </div>
       <div>
-        <h1>Die BVG testet sich: kostenlose Corona-Testangebote</h1>
+        <h1>Die BVG testet sich: kostenlose Corona-Testangebote.</h1>
       </div>
     </header>
 
     <main>
-      <section class="tutorial">
-        <article>
-          <div>1</div>
-          <div>Ein passendes Datum, sowie einen Standort aus der nachfolgenden Liste auswählen. Es erfolgt anschließend eine Weiterleitung zum Dienstleister. Das Testangebot ist kostenlos.</div>
-        </article>
+      <aside>
+        <div>
+          <h3>1</h3>
+          <p>Standort aussuchen und Termin auswählen. Der Testanbieter ist CovidZentrum.de</p>
+        </div>
 
-        <article>
-          <div>2</div>
-          <div>Im dortigen Terminvereinbarungsportal eine Uhrzeit auswählen und die persönlichen Daten eingeben.<br />Das Feld <em>Dokumentennummer</em> ist mit der <em>Dienstausweisnummer</em> zu befüllen.<br />Die Terminvereinbarung muss vollständig durchgeführt werden - andernfalls ist keine Testung möglich.</div>
-        </article>
+        <div>
+          <h3>2</h3>
+          <p>Persönliche Daten eingeben und nachfolgenden Gutschein-Code verwenden.</p>
+        </div>
 
-        <article>
-          <div>3</div>
-          <div>Der gebuchte Zeitpunkt ist möglichst einzuhalten und der Dienstausweis, sowie das Ticket (Digital oder Print) ist mitzubringen und vor Ort unaufgefordert vorzuzeigen.</div>
-        </article>
-      </section>
+        <div>
+          <h3>3</h3>
+          <p>Weiteren Anweisungen folgen und Buchung abschließen.</p>
+        </div>
+      </aside>
 
-      <section>
+      <div class="voucher">
+        <code><?php echo $data['voucher'] ?></code>
+      </div>
+
+      <div class="container">
           <?php
-
-          foreach ($data as $date => $locations) {
-            $datetime = new DateTime($date);
-            $datetime->setTimezone($timezone);
-
-            if (!$datetime || $today > $datetime) {
-              continue;
-            }
-
+          
+          foreach ($data['locations'] as $location) {
             echo '<article>';
               echo '<header>';
-                echo '<h2>'.formatDate($datetime).'</h2>';
+                echo '<h2>'.$location['title'].'</h2>';
               echo '</header>';
               
-              echo '<nav>';
-                ksort($locations);
-                foreach ($locations as $location => $content) {
-                  $begin = null;
-                  if (!empty($content['startTime'])) {
-                    $begin = new DateTime($content['startTime']);
-                  }
-                  $end = null;
-                  if (!empty($content['endTime'])) {
-                    $end = new DateTime($content['endTime']);
-                  }
-
-                  echo '<a href="'.$content['url'].'" target="_blank">';
-                    echo '<div>';
-                    echo $location;
-
-                    if ($begin && $end) {
-                      echo '<div class="timeframe">';
-                        echo $begin->format('H:i').' Uhr &ndash; '.$end->format('H:i').' Uhr';
-                      echo '</div>';
-                    }
-                    echo '</div>';
-                    echo '<div>';
-                      if ($content['hints']) {
-                        $hints = explode(',', $content['hints']);
-                        foreach ($hints as $hint) {
-                          echo '<span class="hint">'.$hint.'</span>';
-                        }
-                      }
-                      if (isset($options['accessibilities'][$location])) {
-                        echo '<span class="hint">';
-                          echo '<svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" viewBox="0 0 24 24" fill="#000000">';
-                            echo '<circle cx="12" cy="4" r="2" />';
-                            echo '<path d="M19 13v-2c-1.54.02-3.09-.75-4.07-1.83l-1.29-1.43c-.17-.19-.38-.34-.61-.45-.01 0-.01-.01-.02-.01H13c-.35-.2-.75-.3-1.19-.26C10.76 7.11 10 8.04 10 9.09V15c0 1.1.9 2 2 2h5v5h2v-5.5c0-1.1-.9-2-2-2h-3v-3.45c1.29 1.07 3.25 1.94 5 1.95zm-9 7c-1.66 0-3-1.34-3-3 0-1.31.84-2.41 2-2.83V12.1c-2.28.46-4 2.48-4 4.9 0 2.76 2.24 5 5 5 2.42 0 4.44-1.72 4.9-4h-2.07c-.41 1.16-1.52 2-2.83 2z" />';
-                          echo '</svg>';
-                        echo '</span>';
-                      }
-                    echo '</div>';
-                  echo '</a>';
+              echo '<section>';
+                echo '<address>'.$location['address'].'</address>';
+                if ($location['note']) {
+                  echo '<p class="note">'.$location['note'].'</p>';
                 }
-              echo '</nav>';
+
+                $periods = $location['periods'];
+                $todays_period = $periods[$today->format('D')];
+                $is_open = !$todays_period['closed'];
+
+                $classes = array();
+                $classes[] = 'todays-opening';
+                $open_text = '&ndash; derzeit geschlossen &ndash;';
+                if ($is_open) {
+                  $begin = substr($todays_period['begin'], 0, -3);
+                  $end = substr($todays_period['end'], 0, -3);
+
+                  $classes[] = 'is-open';
+                  $open_text = 'Geöffnet, von '.$begin.' bis '.$end.' Uhr';
+                }
+                echo '<p class="'.implode(' ', $classes).'">';
+                  echo $open_text;
+                echo '</p>';
+
+                echo '<div class="periods">';
+                foreach ($location['periods'] as $weekday => $period) {
+                  echo '<div class="period-row">';
+                    echo '<span>'.$weekdays[$weekday].'</span>';
+                    echo '<span>';
+                      if ($period['closed']) {
+                        echo 'geschlossen';
+                      } else {
+                        echo substr($period['begin'], 0, -3);
+                        echo ' &ndash; ';
+                        echo substr($period['end'], 0, -3);
+                        echo ' Uhr';
+                      }
+                    echo '</span>';
+                  echo '</div>';
+                }
+                echo '</div>';
+
+                echo '<a href="'.$location['url'].'" target="_blank">';
+                  echo 'Termin buchen...';
+                echo '</a>';
+
+              echo '</section>';
             echo '</article>';
           }
 
           ?>
-      </section>
-
-      <?php
-
-      foreach ($options['hints'] as $key => $value) {
-        $value = preg_replace_callback(
-          '@\\*\\*(.+?)\\*\\*@s',
-          function (array $matches) {
-            return sprintf('<strong>%s</strong>', $matches[1]);
-          },
-          $value);
-        echo '<p><span class="hint">'.$key.'</span><span>'.$value.'</span></p>';
-      }
-
-      ?>
-      <p>
-        <span class="hint">
-          <svg xmlns="http://www.w3.org/2000/svg" height="20px" width="20px" viewBox="0 0 24 24" fill="#000000">
-            <circle cx="12" cy="4" r="2" />
-            <path d="M19 13v-2c-1.54.02-3.09-.75-4.07-1.83l-1.29-1.43c-.17-.19-.38-.34-.61-.45-.01 0-.01-.01-.02-.01H13c-.35-.2-.75-.3-1.19-.26C10.76 7.11 10 8.04 10 9.09V15c0 1.1.9 2 2 2h5v5h2v-5.5c0-1.1-.9-2-2-2h-3v-3.45c1.29 1.07 3.25 1.94 5 1.95zm-9 7c-1.66 0-3-1.34-3-3 0-1.31.84-2.41 2-2.83V12.1c-2.28.46-4 2.48-4 4.9 0 2.76 2.24 5 5 5 2.42 0 4.44-1.72 4.9-4h-2.07c-.41 1.16-1.52 2-2.83 2z" />
-          </svg>
-        </span>
-        Barrierefreier Zugang
-      </p>
+      </div>
     </main>
 
     <div id="dialog-container">
@@ -196,10 +158,10 @@ foreach ($json as $option => $values) {
     </div>
 
     <footer>
-      <div>2021 &copy; Berliner Verkehrsbetriebe</div>
+      <div><?php echo date("Y", time()) ?> &copy; Berliner Verkehrsbetriebe</div>
       <div>
-        <a href="https://www.bvg.de/de/Serviceseiten/Impressum">Impressum</a>
-        <a href="https://www.bvg.de/de/Serviceseiten/Datenschutzhinweise">Datenschutz</a>
+        <a href="https://www.bvg.de/de/impressum">Impressum</a>
+        <a href="https://www.bvg.de/de/datenschutz">Datenschutz</a>
       </div>
     </footer>
 
@@ -207,46 +169,3 @@ foreach ($json as $option => $values) {
 
   </body>
 </html>
-<?php
-
-function formatDate(DateTime $datetime) {
-  static $weekdays;
-  static $months;
-  if (!$weekdays) { // w
-    $weekdays = array(
-      0 => 'Sonntag',
-      1 => 'Montag',
-      2 => 'Dienstag',
-      3 => 'Mittwoch',
-      4 => 'Donnerstag',
-      5 => 'Freitag',
-      6 => 'Samstag',
-    );
-  }
-  if (!$months) { // n
-    $months = array(
-      1 => 'Januar',
-      2 => 'Februar',
-      3 => 'März',
-      4 => 'April',
-      5 => 'Mai',
-      6 => 'Juni',
-      7 => 'Juli',
-      8 => 'August',
-      9 => 'September',
-      10 => 'Oktober',
-      11 => 'November',
-      12 => 'Dezember',
-    );
-  }
-
-  $formated = $datetime->format('Y-n-d-w');
-  list($year, $month, $day, $weekday) = explode('-', $formated);
-
-  return sprintf(
-    '%s, %d. %s %d',
-    $weekdays[$weekday],
-    $day,
-    $months[$month],
-    $year);
-}
